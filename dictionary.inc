@@ -1,4 +1,3 @@
-
 native '+', plus
     pop rax
     add [rsp], rax
@@ -337,6 +336,19 @@ native 'buffer', buffer
   push qword input_buf
   jmp next
 
+native 'savenum', savenum
+  pop rax
+  mov [here], rax
+  xor eax, eax
+  mov rax, here
+  add rax, word_size
+  mov qword[here], rax
+  jmp next
+
+native 'push_lw', push_lastword
+  push last_word
+  jmp next
+
 native 'docol', docol
   	sub rstack, 8
 	mov [rstack], pc
@@ -362,6 +374,17 @@ native 'branch0', branch0
     .f:
     add pc, 8
     jmp next
+
+native 'unsetbranch', unsetbranch
+  mov byte[was_branch], 0
+  jmp next
+
+native 'wasbranch', wasbranch
+  xor rdx, rdx
+  mov dl, byte[was_branch]
+  push rdx
+  jmp next
+
 
 native 'create', create
   mov rcx, [last_word]
